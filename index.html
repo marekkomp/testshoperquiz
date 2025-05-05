@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz: Znajdź idealnego laptopa</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 700px; margin: auto; padding: 20px; }
+        h2 { color: #333; }
+        label { display: block; margin-bottom: 10px; }
+        button { margin-top: 20px; padding: 10px 20px; font-size: 16px; }
+        .laptop { border-bottom: 1px solid #ccc; margin-bottom: 10px; padding-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <h2>Znajdź idealnego laptopa!</h2>
+    <form id="quizForm">
+        <p><strong>1. Jaki rozmiar ekranu preferujesz?</strong></p>
+        <label><input type="radio" name="size" value="13"> 13–14 cali</label>
+        <label><input type="radio" name="size" value="15"> 15–16 cali</label>
+        <label><input type="radio" name="size" value="17"> 17 cali i więcej</label>
+
+        <p><strong>2. Do czego potrzebujesz laptopa?</strong></p>
+        <label><input type="radio" name="purpose" value="biuro"> Praca biurowa / szkoła</label>
+        <label><input type="radio" name="purpose" value="grafika"> Gry / grafika</label>
+        <label><input type="radio" name="purpose" value="mobilność"> Mobilność / podróże</label>
+
+        <p><strong>3. Jaki masz budżet?</strong></p>
+        <label><input type="radio" name="budget" value="do 1500"> Do 1500 zł</label>
+        <label><input type="radio" name="budget" value="1500-2500"> 1500–2500 zł</label>
+        <label><input type="radio" name="budget" value="2500+"> Powyżej 2500 zł</label>
+
+        <button type="submit">Pokaż laptopy</button>
+    </form>
+
+    <div id="results" style="margin-top:30px;"></div>
+
+    <script>
+        let laptops = [];
+
+        fetch('laptopy.json')
+            .then(response => response.json())
+            .then(data => laptops = data);
+
+        document.getElementById('quizForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const size = document.querySelector('input[name="size"]:checked')?.value;
+            const purpose = document.querySelector('input[name="purpose"]:checked')?.value;
+            const budget = document.querySelector('input[name="budget"]:checked')?.value;
+
+            const filtered = laptops.filter(laptop => {
+                const screenSize = laptop.rozmiar;
+                const sizeMatch = (size === "13" && screenSize <= 14)
+                               || (size === "15" && screenSize > 14 && screenSize <= 16)
+                               || (size === "17" && screenSize > 16);
+                return sizeMatch && laptop.cel === purpose && laptop.budzet === budget;
+            });
+
+            const resultsDiv = document.getElementById('results');
+            if (filtered.length === 0) {
+                resultsDiv.innerHTML = "<p><strong>Brak wyników dla wybranych opcji.</strong></p>";
+            } else {
+                resultsDiv.innerHTML = "<h3>Znalezione laptopy:</h3>" + filtered.map(l =>
+                    `<div class="laptop"><strong>${l.model}</strong><br>Rozmiar: ${l.rozmiar}"<br>Cena: ${l.cena} zł</div>`
+                ).join('');
+            }
+        });
+    </script>
+</body>
+</html>
