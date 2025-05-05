@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz: Znajdź idealnego laptopa</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 700px; margin: auto; padding: 20px; }
+        h2 { color: #333; }
+        .question { display: none; margin-bottom: 20px; }
+        .question.active { display: block; }
+        .option { display: block; margin: 10px 0; padding: 10px; border: 1px solid #ccc; cursor: pointer; border-radius: 5px; }
+        .option:hover { background-color: #f0f0f0; }
+        .laptop { border-bottom: 1px solid #ccc; margin-bottom: 10px; padding-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <h2>Znajdź idealnego laptopa!</h2>
+
+    <div id="question1" class="question active">
+        <p><strong>1. Jaki rozmiar ekranu preferujesz?</strong></p>
+        <div class="option" data-value="13" data-question="1">13–14 cali</div>
+        <div class="option" data-value="15" data-question="1">15–16 cali</div>
+        <div class="option" data-value="17" data-question="1">17 cali i więcej</div>
+    </div>
+
+    <div id="question2" class="question">
+        <p><strong>2. Do czego potrzebujesz laptopa?</strong></p>
+        <div class="option" data-value="biuro" data-question="2">Praca biurowa / szkoła</div>
+        <div class="option" data-value="grafika" data-question="2">Gry / grafika</div>
+        <div class="option" data-value="mobilność" data-question="2">Mobilność / podróże</div>
+    </div>
+
+    <div id="question3" class="question">
+        <p><strong>3. Jaki masz budżet?</strong></p>
+        <div class="option" data-value="do 1500" data-question="3">Do 1500 zł</div>
+        <div class="option" data-value="1500-2500" data-question="3">1500–2500 zł</div>
+        <div class="option" data-value="2500+" data-question="3">Powyżej 2500 zł</div>
+    </div>
+
+    <div id="results" style="margin-top:30px;"></div>
+
+    <script>
+        let answers = {};
+        let laptops = [];
+
+        fetch('laptopy.json')
+            .then(response => response.json())
+            .then(data => laptops = data);
+
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const questionNum = this.getAttribute('data-question');
+                const value = this.getAttribute('data-value');
+                if (questionNum === "1") answers.size = value;
+                if (questionNum === "2") answers.purpose = value;
+                if (questionNum === "3") {
+                    answers.budget = value;
+                    showResults(); // ostatni krok
+                    return;
+                }
+
+                // przejście do następnego pytania
+                const current = document.getElementById('question' + questionNum);
+                const next = document.getElementById('question' + (parseInt(questionNum) + 1));
+                if (current) current.classList.remove('active');
+                if (next) next.classList.add('active');
+            });
+        });
+
+        function showResults() {
+            document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
+
+            const size = answers.size;
+            const purpose = answers.purpose;
+            const budget = answers.budget;
+
+            const filtered = laptops.filter(laptop => {
+                const screenSize = laptop.rozmiar;
+                const sizeMatch = (size === "13" && screenSize <= 14)
+                               || (size === "15" && screenSize > 14 && screenSize <= 16)
+                               || (size === "17" && screenSize > 16);
+                return sizeMatch && laptop.cel === purpose && laptop.budzet === budget;
+            });
+
+            const resultsDiv = document.getElementById('results');
+            if (filtered.length === 0) {
+                resultsDiv.innerHTML = "<p><strong>Brak wyników dla wybranych opcji.</strong></p>";
+            } else {
+                resultsDiv.innerHTML = "<h3>Znalezione laptopy:</h3>" + filtered.map(l =>
+                    `<div class="laptop"><strong>${l.model}</strong><br>Rozmiar: ${l.rozmiar}"<br>Cena: ${l.cena} zł</div>`
+                ).join('');
+            }
+        }
+    </script>
+</body>
+</html>
