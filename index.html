@@ -26,6 +26,9 @@
       to { opacity: 1; transform: translateY(0); }
     }
     h2 { text-align:center; animation: fadeIn 1s ease-in-out; }
+    #result { display: none; max-width:600px; margin:50px auto; text-align:center; font-family:Arial,sans-serif; }
+    #result img { max-width:200px; margin-bottom:20px; }
+    #result .answer { margin: 10px auto; width: auto; padding: 10px 20px; }
   </style>
 </head>
 <body>
@@ -53,6 +56,14 @@
     </div>
   </div>
 
+  <div id="result">
+    <img src="https://kompre.pl/img/logo@2x.png" alt="Kompre logo">
+    <div>
+      <button id="btn-result" type="button" class="answer">Zobacz wyniki</button>
+      <button id="btn-restart" type="button" class="answer">Powtórz quiz</button>
+    </div>
+  </div>
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const answers = {};
@@ -64,18 +75,18 @@
           e.stopPropagation();
 
           const step = parseInt(btn.dataset.step, 10);
-          answers[step] = btn.dataset.value;
-
-          const current = document.getElementById('question' + step);
-          current.classList.remove('active');
-          current.style.display = 'none';
-
-          if (step < 3) {
-            const next = document.getElementById('question' + (step + 1));
-            next.style.display = 'block';
-            setTimeout(() => next.classList.add('active'), 10);
-          } else {
-            goToResults();
+          if (step) {
+            answers[step] = btn.dataset.value;
+            const current = document.getElementById('question' + step);
+            current.classList.remove('active');
+            current.style.display = 'none';
+            if (step < 3) {
+              const next = document.getElementById('question' + (step + 1));
+              next.style.display = 'block';
+              setTimeout(() => next.classList.add('active'), 10);
+            } else {
+              goToResults();
+            }
           }
         });
       });
@@ -87,25 +98,28 @@
         'a_a_b': 'https://kompre.pl/laptopy/1/default/1/f_at_800_2373/1/f_at_800_2436/1/f_at_800_2510/1/f_at_816_2482/1/f_at_816_2496/1/f_at_816_2414/1/f_at_816_2676/1/f_at_816_2428/1/pricefrom/700/priceto/1300/',
         'a_a_c': 'https://kompre.pl/laptopy/1/default/1/f_at_800_2373/1/f_at_800_2436/1/f_at_800_2510/1/f_at_816_2482/1/f_at_816_2496/1/f_at_816_2414/1/f_at_816_2676/1/f_at_816_2428/1/pricefrom/1300/',
         'a_b_a': 'https://kompre.pl/laptopy/1/default/1/f_at_800_2373/1/f_at_800_2507/1/f_at_800_2578/1/f_at_816_2482/1/f_at_816_2496/1/f_at_816_2414/1/f_at_816_2676/1/f_at_816_2428/1/priceto/650/',
-        'a_b_b': '',
-        'a_b_c': '',
-        'b_a_a': '',
-        'b_a_b': '',
-        'b_a_c': '',
-        'b_b_a': '',
-        'b_b_b': '',
-        'b_b_c': '',
-        'c_a_a': '',
-        'c_a_b': '',
-        'c_a_c': '',
-        'c_b_a': '',
-        'c_b_b': '',
-        'c_b_c': ''
+        'a_b_b': '', 'a_b_c': '',
+        'b_a_a': '', 'b_a_b': '', 'b_a_c': '',
+        'b_b_a': '', 'b_b_b': '', 'b_b_c': '',
+        'c_a_a': '', 'c_a_b': '', 'c_a_c': '',
+        'c_b_a': '', 'c_b_b': '', 'c_b_c': ''
       };
-
       const key = `${answers[1]}_${answers[2]}_${answers[3]}`;
       const target = urlMap[key] || 'https://kompre.pl/laptopy';
-      window.open(target, '_blank');
+
+      // Pokaż ekran z przyciskami
+      document.getElementById('quiz').style.display = 'none';
+      const res = document.getElementById('result');
+      res.style.display = 'block';
+
+      // Przycisk otwierający wyniki w nowej karcie
+      document.getElementById('btn-result').addEventListener('click', () => {
+        window.open(target, '_blank');
+      });
+      // Przycisk restartu quizu
+      document.getElementById('btn-restart').addEventListener('click', () => {
+        location.reload();
+      });
     }
   </script>
 </body>
