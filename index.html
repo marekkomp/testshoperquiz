@@ -1,21 +1,21 @@
 <!-- Quiz HTML + JS do Shopera -->
 <div id="quiz" style="max-width:600px;margin:auto;font-family:Arial,sans-serif">
-  <h2>Znajdź idealnego laptopa</h2>
+  <h2 style="text-align:center; animation: fadeIn 1s ease-in-out;">Znajdź idealnego laptopa</h2>
 
-  <div id="question1">
+  <div id="question1" class="question fade">
     <p><strong>1. Wielkość ekranu</strong></p>
     <button onclick="selectAnswer(1, 'a')">Mała (do 13 cali)</button>
     <button onclick="selectAnswer(1, 'b')">Średnia (okolice 14 cali)</button>
     <button onclick="selectAnswer(1, 'c')">Duża (15 i więcej)</button>
   </div>
 
-  <div id="question2" style="display:none">
+  <div id="question2" class="question fade" style="display:none">
     <p><strong>2. Przeznaczenie</strong></p>
     <button onclick="selectAnswer(2, 'a')">Wydajność i gry</button>
     <button onclick="selectAnswer(2, 'b')">Biuro i dom</button>
   </div>
 
-  <div id="question3" style="display:none">
+  <div id="question3" class="question fade" style="display:none">
     <p><strong>3. Budżet</strong></p>
     <button onclick="selectAnswer(3, 'a')">Okolice 500zł</button>
     <button onclick="selectAnswer(3, 'b')">Okolice 1000zł</button>
@@ -28,32 +28,41 @@
 
   function selectAnswer(step, value) {
     answers[step] = value;
-    document.getElementById('question' + step).style.display = 'none';
-    if (step < 3) {
-      document.getElementById('question' + (step + 1)).style.display = 'block';
-    } else {
-      goToResults();
-    }
+    const current = document.getElementById('question' + step);
+    current.style.opacity = 0;
+    setTimeout(() => {
+      current.style.display = 'none';
+      if (step < 3) {
+        const next = document.getElementById('question' + (step + 1));
+        next.style.display = 'block';
+        setTimeout(() => next.style.opacity = 1, 10);
+      } else {
+        goToResults();
+      }
+    }, 300);
   }
 
   function goToResults() {
-    // Mapowanie odpowiedzi na URL kategorii
     const urlMap = {
-      'a_a_a': '/laptopy',
+      'a_a_a': '/https://kompre.pl/laptopy',
       'a_a_b': '/laptopy/male-gry-1000zl',
       'a_a_c': '/laptopy/male-gry-1500zl',
       'b_b_b': '/laptopy/srednie-biuro-1000zl',
       'c_b_c': '/laptopy/duze-biuro-1500zl'
-      // dodaj pozostałe kombinacje...
     };
 
     const key = `${answers[1]}_${answers[2]}_${answers[3]}`;
-    const target = urlMap[key] || '/laptopy'; // domyślny link
+    const target = urlMap[key] || '/laptopy';
     window.location.href = target;
   }
 </script>
 
 <style>
+  .question {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+
   #quiz button {
     display: block;
     width: 100%;
@@ -61,5 +70,18 @@
     margin: 6px 0;
     font-size: 16px;
     cursor: pointer;
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+  }
+
+  #quiz button:hover {
+    background: #e0e0e0;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 </style>
