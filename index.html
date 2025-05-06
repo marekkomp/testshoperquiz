@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz: Dopasuj laptop</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 700px; margin: auto; padding: 20px; }
+        .question { display: none; margin-bottom: 20px; }
+        .question.active { display: block; }
+        .option { display: block; margin: 10px 0; padding: 10px; border: 1px solid #ccc; cursor: pointer; border-radius: 5px; }
+        .option:hover { background-color: #f0f0f0; }
+        .laptop { border-bottom: 1px solid #ccc; margin-bottom: 10px; padding-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <h2>Znajdź idealnego laptopa!</h2>
+
+    <div id="question1" class="question active">
+        <p><strong>1. Wielkość ekranu</strong></p>
+        <div class="option" data-value="a" data-question="1">Mała (do 13 cali)</div>
+        <div class="option" data-value="b" data-question="1">Średnia (okolice 14 cali)</div>
+        <div class="option" data-value="c" data-question="1">Duża (15 i więcej)</div>
+    </div>
+
+    <div id="question2" class="question">
+        <p><strong>2. Przeznaczenie</strong></p>
+        <div class="option" data-value="a" data-question="2">Wydajność i gry</div>
+        <div class="option" data-value="b" data-question="2">Biuro i dom</div>
+    </div>
+
+    <div id="question3" class="question">
+        <p><strong>3. Budżet</strong></p>
+        <div class="option" data-value="a" data-question="3">Okolice 500zł</div>
+        <div class="option" data-value="b" data-question="3">Okolice 1000zł</div>
+        <div class="option" data-value="c" data-question="3">Okolice 1500zł</div>
+    </div>
+
+    <div id="results" style="margin-top:30px;"></div>
+
+    <script>
+        let answers = {};
+        let laptops = [];
+
+        fetch('laptopy.csv')
+            .then(response => response.text())
+            .then(text => {
+                const rows = text.trim().split('\n');
+                const headers = rows[0].split(',');
+                laptops = rows.slice(1).map(row => {
+                    const values = row.split(',');
+                    let obj = {};
+                    headers.forEach((h, i) => obj[h] = values[i].trim());
+                    return obj;
+                });
+            });
+
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const q = this.getAttribute('data-question');
+                const val = this.getAttribute('data-value');
+                answers[q] = val;
+
+                const current = document.getElementById('question' + q);
+                const next = document.getElementById('question' + (parseInt(q) + 1));
+                if (current) current.classList.remove('active');
+                if (next) {
+                    next.classList.add('active');
+                } else {
+                    showResults();
+                }
+            });
+        });
+
+        function showResults() {
+            const resultsDiv = document.getElementById('results');
+            const filtered = laptops.filter(l => {
+                return ["1", "2", "3"].every(q => {
+                    return l[q] && l[q].trim() === answers[q];
+                });
+            });
+
+            if (filtered.length === 0) {
+                resultsDiv.innerHTML = "<p><strong>Brak wyników dla wybranych opcji.</strong></p>";
+            } else {
+                resultsDiv.innerHTML = "<h3>Znalezione laptopy:</h3>" + filtered.map(l =>
+                    `<div class="laptop"><strong>${l["Nazwa produktu"]}</strong><br>Cena: ${l.price} zł</div>`
+                ).join('');
+            }
+        }
+    </script>
+</body>
+</html>
