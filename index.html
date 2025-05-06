@@ -2,40 +2,48 @@
 <div id="quiz" style="max-width:600px;margin:auto;font-family:Arial,sans-serif">
   <h2 style="text-align:center; animation: fadeIn 1s ease-in-out;">Znajdź idealnego laptopa</h2>
 
-  <div id="question1" class="question fade">
+  <div id="question1" class="question fade active">
     <p><strong>1. Wielkość ekranu</strong></p>
-    <button onclick="selectAnswer(1, 'a')">Mała (do 13 cali)</button>
-    <button onclick="selectAnswer(1, 'b')">Średnia (okolice 14 cali)</button>
-    <button onclick="selectAnswer(1, 'c')">Duża (15 i więcej)</button>
+    <button class="answer" data-step="1" data-value="a">Mała (do 13 cali)</button>
+    <button class="answer" data-step="1" data-value="b">Średnia (okolice 14 cali)</button>
+    <button class="answer" data-step="1" data-value="c">Duża (15 i więcej)</button>
   </div>
 
-  <div id="question2" class="question fade" style="display:none">
+  <div id="question2" class="question fade">
     <p><strong>2. Przeznaczenie</strong></p>
-    <button onclick="selectAnswer(2, 'a')">Wydajność i gry</button>
-    <button onclick="selectAnswer(2, 'b')">Biuro i dom</button>
+    <button class="answer" data-step="2" data-value="a">Wydajność i gry</button>
+    <button class="answer" data-step="2" data-value="b">Biuro i dom</button>
   </div>
 
-  <div id="question3" class="question fade" style="display:none">
+  <div id="question3" class="question fade">
     <p><strong>3. Budżet</strong></p>
-    <button onclick="selectAnswer(3, 'a')">Okolice 500zł</button>
-    <button onclick="selectAnswer(3, 'b')">Okolice 1000zł</button>
-    <button onclick="selectAnswer(3, 'c')">Okolice 1500zł</button>
+    <button class="answer" data-step="3" data-value="a">Okolice 500zł</button>
+    <button class="answer" data-step="3" data-value="b">Okolice 1000zł</button>
+    <button class="answer" data-step="3" data-value="c">Okolice 1500zł</button>
   </div>
 </div>
 
 <script>
   const answers = {};
 
+  document.querySelectorAll('.answer').forEach(button => {
+    button.addEventListener('click', () => {
+      const step = button.dataset.step;
+      const value = button.dataset.value;
+      selectAnswer(parseInt(step), value);
+    });
+  });
+
   function selectAnswer(step, value) {
     answers[step] = value;
     const current = document.getElementById('question' + step);
-    current.style.opacity = 0;
+    current.classList.remove('active');
     setTimeout(() => {
       current.style.display = 'none';
       if (step < 3) {
         const next = document.getElementById('question' + (step + 1));
         next.style.display = 'block';
-        setTimeout(() => next.style.opacity = 1, 10);
+        setTimeout(() => next.classList.add('active'), 10);
       } else {
         goToResults();
       }
@@ -44,23 +52,30 @@
 
   function goToResults() {
     const urlMap = {
-      'a_a_a': 'https://kompre.pl/laptopy',
-      'a_a_b': '/laptopy/male-gry-1000zl',
-      'a_a_c': '/laptopy/male-gry-1500zl',
-      'b_b_b': '/laptopy/srednie-biuro-1000zl',
-      'c_b_c': '/laptopy/duze-biuro-1500zl'
+      'a_a_a': '', 'a_a_b': '', 'a_a_c': '',
+      'a_b_a': '', 'a_b_b': '', 'a_b_c': '',
+      'b_a_a': '', 'b_a_b': '', 'b_a_c': '',
+      'b_b_a': '', 'b_b_b': '', 'b_b_c': '',
+      'c_a_a': '', 'c_a_b': '', 'c_a_c': '',
+      'c_b_a': '', 'c_b_b': '', 'c_b_c': ''
     };
 
     const key = `${answers[1]}_${answers[2]}_${answers[3]}`;
-    const target = urlMap[key] || '/laptopy';
+    const target = urlMap[key] || 'https://kompre.pl/laptopy';
     window.top.location.href = target;
   }
 </script>
 
 <style>
   .question {
-    opacity: 1;
+    display: none;
+    opacity: 0;
     transition: opacity 0.3s ease;
+  }
+
+  .question.active {
+    display: block;
+    opacity: 1;
   }
 
   #quiz button {
