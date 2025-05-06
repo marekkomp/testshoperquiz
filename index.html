@@ -1,98 +1,112 @@
-<!-- Quiz HTML + JS do Shopera z przyciskami odpowiedzi -->
-<div id="quiz" style="max-width:600px;margin:auto;font-family:Arial,sans-serif">
-  <h2 style="text-align:center; animation: fadeIn 1s ease-in-out;">Znajdź idealnego laptopa</h2>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Quiz Shopera</title>
+  <style>
+    #quiz { max-width:600px; margin:auto; font-family:Arial,sans-serif }
+    .question { display: none; opacity: 0; transition: opacity 0.3s ease; }
+    .question.active { display: block; opacity: 1; }
+    .answer {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: #f5f5f5;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .answer:hover { background-color: #e0e0e0; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    h2 { text-align:center; animation: fadeIn 1s ease-in-out; }
+  </style>
+</head>
+<body>
+  <div id="quiz">
+    <h2>Znajdź idealnego laptopa</h2>
 
-  <div id="question1" class="question fade active">
-    <p><strong>1. Wielkość ekranu</strong></p>
-    <button class="answer" data-step="1" data-value="a">Mała (do 13 cali)</button>
-    <button class="answer" data-step="1" data-value="b">Średnia (okolice 14 cali)</button>
-    <button class="answer" data-step="1" data-value="c">Duża (15 i więcej)</button>
+    <div id="question1" class="question active">
+      <p><strong>1. Wielkość ekranu</strong></p>
+      <button type="button" class="answer" data-step="1" data-value="a">Mała (do 13 cali)</button>
+      <button type="button" class="answer" data-step="1" data-value="b">Średnia (okolice 14 cali)</button>
+      <button type="button" class="answer" data-step="1" data-value="c">Duża (15 i więcej)</button>
+    </div>
+
+    <div id="question2" class="question">
+      <p><strong>2. Przeznaczenie</strong></p>
+      <button type="button" class="answer" data-step="2" data-value="a">Wydajność i gry</button>
+      <button type="button" class="answer" data-step="2" data-value="b">Biuro i dom</button>
+    </div>
+
+    <div id="question3" class="question">
+      <p><strong>3. Budżet</strong></p>
+      <button type="button" class="answer" data-step="3" data-value="a">Okolice 500&nbsp;zł</button>
+      <button type="button" class="answer" data-step="3" data-value="b">Okolice 1000&nbsp;zł</button>
+      <button type="button" class="answer" data-step="3" data-value="c">Okolice 1500&nbsp;zł</button>
+    </div>
   </div>
 
-  <div id="question2" class="question fade">
-    <p><strong>2. Przeznaczenie</strong></p>
-    <button class="answer" data-step="2" data-value="a">Wydajność i gry</button>
-    <button class="answer" data-step="2" data-value="b">Biuro i dom</button>
-  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const answers = {};
 
-  <div id="question3" class="question fade">
-    <p><strong>3. Budżet</strong></p>
-    <button class="answer" data-step="3" data-value="a">Okolice 500zł</button>
-    <button class="answer" data-step="3" data-value="b">Okolice 1000zł</button>
-    <button class="answer" data-step="3" data-value="c">Okolice 1500zł</button>
-  </div>
-</div>
+      document.querySelectorAll('.answer').forEach(btn => {
+        btn.type = 'button';
+        btn.addEventListener('click', e => {
+          e.preventDefault();
+          e.stopPropagation();
 
-<script>
-  const answers = {};
+          const step = parseInt(btn.dataset.step, 10);
+          answers[step] = btn.dataset.value;
 
-  document.querySelectorAll('.answer').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const step = parseInt(btn.dataset.step);
-      const value = btn.dataset.value;
-      answers[step] = value;
+          const current = document.getElementById('question' + step);
+          current.classList.remove('active');
+          current.style.display = 'none';
 
-      const current = document.getElementById('question' + step);
-      current.classList.remove('active');
-      current.style.display = 'none';
-
-      if (step < 3) {
-        const next = document.getElementById('question' + (step + 1));
-        next.style.display = 'block';
-        setTimeout(() => next.classList.add('active'), 10);
-      } else {
-        goToResults();
-      }
+          if (step < 3) {
+            const next = document.getElementById('question' + (step + 1));
+            next.style.display = 'block';
+            setTimeout(() => next.classList.add('active'), 10);
+          } else {
+            goToResults();
+          }
+        });
+      });
     });
-  });
 
-  function goToResults() {
-    const urlMap = {
-        'a_a_a': 'https://kompre.pl/laptopy/1/default/1/f_at_800_2373/1/f_at_800_2436/1/f_at_800_2510/1/f_at_816_2482/1/f_at_816_2496/1/f_at_816_2414/1/f_at_816_2676/1/f_at_816_2428/1/priceto/650/', 'a_a_b': 'https://kompre.pl/laptopy/1/default/1/f_at_800_2373/1/f_at_800_2436/1/f_at_800_2510/1/f_at_816_2482/1/f_at_816_2496/1/f_at_816_2414/1/f_at_816_2676/1/f_at_816_2428/1/pricefrom/700/priceto/1300/', 'a_a_c': 'https://kompre.pl/laptopy/1/default/1/f_at_800_2373/1/f_at_800_2436/1/f_at_800_2510/1/f_at_816_2482/1/f_at_816_2496/1/f_at_816_2414/1/f_at_816_2676/1/f_at_816_2428/1/pricefrom/1300/',
-      'a_b_a': 'https://kompre.pl/laptopy/1/default/1/f_at_800_2373/1/f_at_800_2507/1/f_at_800_2578/1/f_at_816_2482/1/f_at_816_2496/1/f_at_816_2414/1/f_at_816_2676/1/f_at_816_2428/1/priceto/650/', 'a_b_b': '', 'a_b_c': '',
-      'b_a_a': '', 'b_a_b': '', 'b_a_c': '',
-      'b_b_a': '', 'b_b_b': '', 'b_b_c': '',
-      'c_a_a': '', 'c_a_b': '', 'c_a_c': '',
-      'c_b_a': '', 'c_b_b': '', 'c_b_c': ''
-    };
+    function goToResults() {
+      const urlMap = {
+        'a_a_a': 'https://kompre.pl/laptopy/1/default/1/f_at_800_2373/1/f_at_800_2436/1/f_at_800_2510/1/f_at_816_2482/1/f_at_816_2496/1/f_at_816_2414/1/f_at_816_2676/1/f_at_816_2428/1/priceto/650/',
+        'a_a_b': 'https://kompre.pl/laptopy/1/default/1/f_at_800_2373/1/f_at_800_2436/1/f_at_800_2510/1/f_at_816_2482/1/f_at_816_2496/1/f_at_816_2414/1/f_at_816_2676/1/f_at_816_2428/1/pricefrom/700/priceto/1300/',
+        'a_a_c': 'https://kompre.pl/laptopy/1/default/1/f_at_800_2373/1/f_at_800_2436/1/f_at_800_2510/1/f_at_816_2482/1/f_at_816_2496/1/f_at_816_2414/1/f_at_816_2676/1/f_at_816_2428/1/pricefrom/1300/',
+        'a_b_a': 'https://kompre.pl/laptopy/1/default/1/f_at_800_2373/1/f_at_800_2507/1/f_at_800_2578/1/f_at_816_2482/1/f_at_816_2496/1/f_at_816_2414/1/f_at_816_2676/1/f_at_816_2428/1/priceto/650/',
+        'a_b_b': '',
+        'a_b_c': '',
+        'b_a_a': '',
+        'b_a_b': '',
+        'b_a_c': '',
+        'b_b_a': '',
+        'b_b_b': '',
+        'b_b_c': '',
+        'c_a_a': '',
+        'c_a_b': '',
+        'c_a_c': '',
+        'c_b_a': '',
+        'c_b_b': '',
+        'c_b_c': ''
+      };
 
-    const key = `${answers[1]}_${answers[2]}_${answers[3]}`;
-    const target = urlMap[key] || 'https://kompre.pl/laptopy';
-    window.top.location.href = target;
-  }
-</script>
-
-<style>
-  .question {
-    display: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .question.active {
-    display: block;
-    opacity: 1;
-  }
-
-  .answer {
-    display: block;
-    width: 100%;
-    margin: 10px 0;
-    padding: 12px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #f5f5f5;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-
-  .answer:hover {
-    background-color: #e0e0e0;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-</style>
+      const key = `${answers[1]}_${answers[2]}_${answers[3]}`;
+      const target = urlMap[key] || 'https://kompre.pl/laptopy';
+      window.open(target, '_blank');
+    }
+  </script>
+</body>
+</html>
