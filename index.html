@@ -37,7 +37,22 @@
       transition: background 0.3s ease;
     }
     .btn:hover { background-color: #e0e0e0; }
-    #btn-result, #loading-text { display: none; }
+    #btn-result { display: none; }
+    /* Spinner animation */
+    #loading-spinner {
+      display: none;
+      margin: 20px auto;
+      width: 50px;
+      height: 50px;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #3498db;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
@@ -67,7 +82,7 @@
   </div>
 
   <div id="controls">
-    <div id="loading-text">Trwa ładowanie wyników...</div>
+    <div id="loading-spinner"></div>
     <button id="btn-result" class="btn">Zobacz ofertę</button>
     <button id="btn-back" class="btn">Powrót do Kompre</button>
     <button id="btn-refresh" class="btn">Odśwież quiz</button>
@@ -101,7 +116,8 @@
           if (step < 3) {
             showQuestion(step + 1);
           } else {
-            document.getElementById('loading-text').style.display = 'block';
+            const spinner = document.getElementById('loading-spinner');
+            spinner.style.display = 'block';
             const key = `${answers[1]}_${answers[2]}_${answers[3]}`;
             const target = urlMap[key] || 'https://kompre.pl/laptopy';
             setTimeout(() => window.open(target, '_blank'), 2000);
