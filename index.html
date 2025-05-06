@@ -126,7 +126,7 @@
             document.getElementById('loading-spinner').style.display = 'block';
             const key = `${answers[1]}_${answers[2]}_${answers[3]}`;
             const target = urlMap[key] || 'https://kompre.pl/laptopy';
-            setTimeout(() => { window.location.href = target; }, 500);
+            setTimeout(() => { window.location.href = target; }, 250);
             document.getElementById('btn-result').style.display = 'inline-block';
           }
         });
