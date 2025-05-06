@@ -92,9 +92,15 @@
     document.addEventListener('DOMContentLoaded', () => {
       const answers = {};
       const urlMap = {
-        'a_a_a': 'https://kompre.pl/laptopy/.../priceto/650/',
-        'a_a_b': 'https://kompre.pl/laptopy/.../priceto/1300/',
-        // wszystkie kombinacje
+           'a_a_a': 'https://kompre.pl/laptopy/1/default/1/f_at_800_2373/1/f_at_800_2436/1/f_at_800_2510/1/f_at_816_2482/1/f_at_816_2496/1/f_at_816_2414/1/f_at_816_2676/1/f_at_816_2428/1/priceto/650/',
+        'a_a_b': 'https://kompre.pl/laptopy/1/default/1/f_at_800_2373/1/f_at_800_2436/1/f_at_800_2510/1/f_at_816_2482/1/f_at_816_2496/1/f_at_816_2414/1/f_at_816_2676/1/f_at_816_2428/1/pricefrom/700/priceto/1300/',
+        'a_a_c': 'https://kompre.pl/laptopy/1/default/1/f_at_800_2373/1/f_at_800_2436/1/f_at_800_2510/1/f_at_816_2482/1/f_at_816_2496/1/f_at_816_2414/1/f_at_816_2676/1/f_at_816_2428/1/pricefrom/1300/',
+        'a_b_a': 'https://kompre.pl/laptopy/1/default/1/f_at_800_2373/1/f_at_800_2507/1/f_at_800_2578/1/f_at_816_2482/1/f_at_816_2496/1/f_at_816_2414/1/f_at_816_2676/1/f_at_816_2428/1/priceto/650/',
+        'a_b_b': '', 'a_b_c': '',
+        'b_a_a': '', 'b_a_b': '', 'b_a_c': '',
+        'b_b_a': '', 'b_b_b': '', 'b_b_c': '',
+        'c_a_a': '', 'c_a_b': '', 'c_a_c': '',
+        'c_b_a': '', 'c_b_b': '', 'c_b_c': ''
       };
 
       const questions = document.querySelectorAll('.question');
