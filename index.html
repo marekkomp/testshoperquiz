@@ -57,7 +57,7 @@
 </head>
 <body>
   <div id="logo">
-    <img src="https://kompre.pl/img/logo@2x.png" alt="Kompre logo">
+    <img src="https://kompre.pl/skins/store_user/store_9cd390f998d36daee08a824eb4f4c853_1/images/logo.png" alt="Kompre logo">
   </div>
 
   <div id="quiz">
@@ -90,7 +90,7 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const answers = {};
+      window.answers = {};
       const urlMap = {
            'a_a_a': 'https://kompre.pl/laptopy/1/default/1/f_at_800_2373/1/f_at_800_2436/1/f_at_800_2510/1/f_at_816_2482/1/f_at_816_2496/1/f_at_816_2414/1/f_at_816_2676/1/f_at_816_2428/1/priceto/650/',
         'a_a_b': 'https://kompre.pl/laptopy/1/default/1/f_at_800_2373/1/f_at_800_2436/1/f_at_800_2510/1/f_at_816_2482/1/f_at_816_2496/1/f_at_816_2414/1/f_at_816_2676/1/f_at_816_2428/1/pricefrom/700/priceto/1300/',
@@ -105,10 +105,10 @@
 
       const questions = document.querySelectorAll('.question');
       const showQuestion = step => {
-        questions.forEach(q => q.classList.remove('active'));
-        const q = document.getElementById('question' + step);
-        q.style.display = 'block';
-        setTimeout(() => q.classList.add('active'), 10);
+        questions.forEach(q => { q.style.display = 'none'; q.classList.remove('active'); });
+        const current = document.getElementById('question' + step);
+        current.style.display = 'block';
+        setTimeout(() => current.classList.add('active'), 10);
       };
 
       showQuestion(1);
@@ -117,16 +117,16 @@
         btn.addEventListener('click', e => {
           e.preventDefault(); e.stopPropagation();
           const step = parseInt(btn.dataset.step, 10);
-          answers[step] = btn.dataset.value;
-          document.getElementById('question' + step).style.display = 'none';
+          if (!step) return;
+          window.answers[step] = btn.dataset.value;
+          // przejdź do następnego lub wyświetl wyniki
           if (step < 3) {
             showQuestion(step + 1);
           } else {
-            const spinner = document.getElementById('loading-spinner');
-            spinner.style.display = 'block';
+            document.getElementById('loading-spinner').style.display = 'block';
             const key = `${answers[1]}_${answers[2]}_${answers[3]}`;
             const target = urlMap[key] || 'https://kompre.pl/laptopy';
-            setTimeout(() => window.open(target, '_blank'), 2000);
+            setTimeout(() => { window.location.href = target; }, 2000);
             document.getElementById('btn-result').style.display = 'inline-block';
           }
         });
@@ -135,13 +135,11 @@
       document.getElementById('btn-result').addEventListener('click', () => {
         const key = `${answers[1]}_${answers[2]}_${answers[3]}`;
         const target = urlMap[key] || 'https://kompre.pl/laptopy';
-        window.open(target, '_blank');
+        window.location.href = target;
       });
-
       document.getElementById('btn-back').addEventListener('click', () => {
         window.location.href = 'https://kompre.pl';
       });
-
       document.getElementById('btn-refresh').addEventListener('click', () => {
         location.reload();
       });
