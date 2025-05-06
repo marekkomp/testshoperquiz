@@ -1,4 +1,4 @@
-<!-- Quiz HTML + JS do Shopera -->
+<!-- Quiz HTML + JS do Shopera z przyciskami odpowiedzi -->
 <div id="quiz" style="max-width:600px;margin:auto;font-family:Arial,sans-serif">
   <h2 style="text-align:center; animation: fadeIn 1s ease-in-out;">Znajdź idealnego laptopa</h2>
 
@@ -26,20 +26,16 @@
 <script>
   const answers = {};
 
-  document.querySelectorAll('.answer').forEach(button => {
-    button.addEventListener('click', () => {
-      const step = button.dataset.step;
-      const value = button.dataset.value;
-      selectAnswer(parseInt(step), value);
-    });
-  });
+  document.querySelectorAll('.answer').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const step = parseInt(btn.dataset.step);
+      const value = btn.dataset.value;
+      answers[step] = value;
 
-  function selectAnswer(step, value) {
-    answers[step] = value;
-    const current = document.getElementById('question' + step);
-    current.classList.remove('active');
-    setTimeout(() => {
+      const current = document.getElementById('question' + step);
+      current.classList.remove('active');
       current.style.display = 'none';
+
       if (step < 3) {
         const next = document.getElementById('question' + (step + 1));
         next.style.display = 'block';
@@ -47,13 +43,13 @@
       } else {
         goToResults();
       }
-    }, 300);
-  }
+    });
+  });
 
   function goToResults() {
     const urlMap = {
-      'a_a_a': 'https://kompre.pl/laptopy/1/default/1/f_at_800_2373/1/f_at_800_2436/1/f_at_800_2510/1/f_at_816_2482/1/f_at_816_2496/1/f_at_816_2414/1/f_at_816_2676/1/f_at_816_2428/1/priceto/650/', 'a_a_b': '', 'a_a_c': '',
-      'a_b_a': '', 'a_b_b': '', 'a_b_c': '',
+        'a_a_a': 'https://kompre.pl/laptopy/1/default/1/f_at_800_2373/1/f_at_800_2436/1/f_at_800_2510/1/f_at_816_2482/1/f_at_816_2496/1/f_at_816_2414/1/f_at_816_2676/1/f_at_816_2428/1/priceto/650/', 'a_a_b': 'https://kompre.pl/laptopy/1/default/1/f_at_800_2373/1/f_at_800_2436/1/f_at_800_2510/1/f_at_816_2482/1/f_at_816_2496/1/f_at_816_2414/1/f_at_816_2676/1/f_at_816_2428/1/pricefrom/700/priceto/1300/', 'a_a_c': 'https://kompre.pl/laptopy/1/default/1/f_at_800_2373/1/f_at_800_2436/1/f_at_800_2510/1/f_at_816_2482/1/f_at_816_2496/1/f_at_816_2414/1/f_at_816_2676/1/f_at_816_2428/1/pricefrom/1300/',
+      'a_b_a': 'https://kompre.pl/laptopy/1/default/1/f_at_800_2373/1/f_at_800_2507/1/f_at_800_2578/1/f_at_816_2482/1/f_at_816_2496/1/f_at_816_2414/1/f_at_816_2676/1/f_at_816_2428/1/priceto/650/', 'a_b_b': '', 'a_b_c': '',
       'b_a_a': '', 'b_a_b': '', 'b_a_c': '',
       'b_b_a': '', 'b_b_b': '', 'b_b_c': '',
       'c_a_a': '', 'c_a_b': '', 'c_a_c': '',
@@ -78,21 +74,21 @@
     opacity: 1;
   }
 
-  #quiz button {
+  .answer {
     display: block;
     width: 100%;
-    padding: 10px;
-    margin: 6px 0;
+    margin: 10px 0;
+    padding: 12px;
     font-size: 16px;
-    cursor: pointer;
-    background: #f5f5f5;
     border: 1px solid #ccc;
     border-radius: 4px;
+    background-color: #f5f5f5;
+    cursor: pointer;
     transition: background 0.3s ease;
   }
 
-  #quiz button:hover {
-    background: #e0e0e0;
+  .answer:hover {
+    background-color: #e0e0e0;
   }
 
   @keyframes fadeIn {
